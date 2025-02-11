@@ -11,14 +11,14 @@
 
 @code{
     
-    List<Product> products = new List<Product>();
+    IEnumerable<Product>? products;
         protected override async Task OnInitializedAsync()
         {
-        products = (await GetProd.GetProductList()).ToList();
+        products = await GetProd.GetProductList();
 
         foreach (var product in products)
         {
-            Console.WriteLine(product);
+            Console.WriteLine(product.name);
         }
     }
 }
