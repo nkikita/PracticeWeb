@@ -1,0 +1,24 @@
+﻿@page "/ProductsPage";
+@inject HttpClient Http
+@using Test1.Models;
+
+@inject Service.GetProductService GetProd
+
+<PageTitle>User Page</PageTitle>
+
+<h1>Product Information</h1>
+
+
+@code{
+    
+    List<Product> products = new List<Product>();
+        protected override async Task OnInitializedAsync()
+        {
+        products = (await GetProd.GetProductList()).ToList();
+
+        foreach (var product in products)
+        {
+            Console.WriteLine(product);
+        }
+    }
+}
