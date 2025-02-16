@@ -1,24 +1,83 @@
 ﻿@page "/ProductsPage";
 @inject HttpClient Http
-@using Test1.Models;
+@using PracticeWeb.Models;
+@using PracticeWeb.Service.ProductService;
+@using PracticeWeb.Service.ProviderService;
+@inject NotificationService NotificationService
 
-@inject Service.GetProductService GetProd
+@inject GetProductService GetProd
+@inject GetProvToIDService GetProv
+
 
 <PageTitle>User Page</PageTitle>
 
-<h1>Product Information</h1>
+        
+ <RadzenRow Gap="1rem">
+        <RadzenColumn Size="12" SizeMD="6">
 
-
+            <h1>Product Information</h1>
+            <RadzenRow>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 15px;">
+                    <RadzenButton Click=@(args => OnClick("Добавить продукт")) Icon="add_circle" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click=@(args => OnClick("Удалить продукт")) Text="Удалить" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click=@(args => OnClick("Изменить продукт")) Text="Изменить" ButtonStyle="ButtonStyle.Primary" />
+                </RadzenStack>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@prods" @bind-Value="SelectedProduct">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(Product.id)" Filterable="false" Title="Id" Frozen="false" Width="80px" TextAlign="TextAlign.Center" />
+                        <RadzenDataGridColumn Property="@nameof(Product.name)" Title="name" Frozen="true" Width="160px" />
+                        <RadzenDataGridColumn Property="@nameof(Product.count)" Title="count" Width="160px"/>
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenRow>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6">
+            <h1>Providers</h1>
+            <RadzenRow>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 15px;">
+                    <RadzenButton Click=@(args => OnClick("Добавить провайдера")) Text="Добавить" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click=@(args => OnClick("Удалить провайдера")) Text="Удалить" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click=@(args => OnClick("Изменить провайдера")) Text="Изменить" ButtonStyle="ButtonStyle.Primary" />
+                </RadzenStack>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenStack Gap="1rem">
+                    
+                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedProduct?.FirstOrDefault()?.Provider">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(Provider.id)" Filterable="false" Title="id Provider" Frozen="true" Width="40px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Property="@nameof(Provider.name)" Title="name" Width="100px" />
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenStack>
+            </RadzenRow>
+        </RadzenColumn>
+    </RadzenRow>
 @code{
-    
-    IEnumerable<Product>? products;
-        protected override async Task OnInitializedAsync()
-        {
-        products = await GetProd.GetProductList();
+    IList<Product>? SelectedProduct { get; set; }
+    IList<Product>? products = new List<Product>{}; 
 
-        foreach (var product in products)
-        {
-            Console.WriteLine(product.name + " "+ product.id);
+
+    protected IEnumerable<Product>? prods;
+    protected IEnumerable<Provider>? providers;
+    protected override async Task OnInitializedAsync()
+    {
+        prods = await GetProd.GetProductList();
+
+        foreach(var c in prods){
+            providers = await GetProv.GetProvToIdList(c.id);
+
+            if(providers != null){
+                c.Provider = providers.ToList<Provider>();
+            }
+            products.Add(c);
         }
+       SelectedProduct = new List<Product>(){products.FirstOrDefault()}; 
+    }
+   private void OnClick(string text)
+    {
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Button Clicked", Detail = text });
     }
 }

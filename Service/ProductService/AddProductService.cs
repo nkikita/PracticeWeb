@@ -6,7 +6,7 @@ using Microsoft.Extensions.Http;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 using System.Web;
-using Test1.Models;
+using PracticeWeb.Models;
 
 namespace PracticeWeb.Service.ProductService
 {

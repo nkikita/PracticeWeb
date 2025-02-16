@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Http;
-using Test1.Models;
+using PracticeWeb.Models;
 using System.Net.Http.Json;
 
-namespace PracticeWeb.Service
+namespace PracticeWeb.Service.ProductService
 {
     public partial class GetProductService
     {

@@ -4,14 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 
-namespace Test1.Models
+namespace PracticeWeb.Models
 {
     public class Product
     {
-        [JsonPropertyName("IdProduct")] 
         public int id {get; set;}
-        [JsonPropertyName("NameProduct")]
         public string? name {get; set;}
         public int count {get; set;}
+        public List<Provider> Provider { get; set; }
     }
 }
