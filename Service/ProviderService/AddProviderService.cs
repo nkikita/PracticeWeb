@@ -6,7 +6,7 @@ using System.Web;
 using PracticeWeb.Models;
 
 
-namespace PracticeWeb.Service
+namespace PracticeWeb.Service.ProviderService
 {
    public partial class AddProviderService
     {

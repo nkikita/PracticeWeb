@@ -403,7 +403,7 @@
 }
 
 @font-face {
-  font-family: "Material Symbols";
+  font-family: "Material Symbols", ;
   src: url("../fonts/MaterialSymbolsOutlined.woff2") format("woff2 supports variations"), url("../fonts/MaterialSymbolsOutlined.woff2") format("woff2-variations");
   font-style: normal;
   font-weight: 100 700;

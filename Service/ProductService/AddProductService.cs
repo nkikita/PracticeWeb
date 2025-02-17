@@ -24,7 +24,7 @@ namespace PracticeWeb.Service.ProductService
         partial void OnGetProductListResponse(HttpResponseMessage response);
 
 
-        public async Task<IEnumerable<Product>> GetProviderList(string name, int count)
+        public async Task<IEnumerable<Product>> AddProductList(string name, int count)
         {
             var uri = new Uri(httpClient.BaseAddress, $"addProducts");
 

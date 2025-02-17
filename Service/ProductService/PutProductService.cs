@@ -23,7 +23,7 @@ namespace PracticeWeb.Service.ProductService
         partial void OnPutProductList(HttpRequestMessage request);
         partial void OnPutProductListResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<Product>> PutRankList(string name,int id)
+        public async Task<IEnumerable<Product>> PutProdList(string name,int id, int count)
         {
             var uri = new Uri(httpClient.BaseAddress, $"setProducts");
 
@@ -32,6 +32,7 @@ namespace PracticeWeb.Service.ProductService
 
             queryString.Add($"id", $"{id}");
             queryString.Add($"name", $"{name}");
+            queryString.Add($"count", $"{count}");
 
 
             uriBuilder.Query = queryString.ToString();

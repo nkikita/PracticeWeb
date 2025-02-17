@@ -4,10 +4,75 @@
 @using PracticeWeb.Service.ProductService;
 @using PracticeWeb.Service.ProviderService;
 @inject NotificationService NotificationService
+@inject DialogService DialogService
 
 @inject GetProductService GetProd
+@inject PutProductService PutProd
+@inject DeleteProductService DelProd
+@inject AddProductService AddProd
+
 @inject GetProvToIDService GetProv
 
+
+
+@code{
+    async Task AddProdPage()
+    {
+        string productName = "";
+        string productCount = "";
+        var result = await DialogService.OpenAsync("Добавление продукта", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <RadzenTextBox @bind-Value="productName" Placeholder="Введите название продукта" />
+            <RadzenTextBox @bind-Value="productCount"Placeholder="Введите количество" />
+            <RadzenButton Text="Да" Click="@(() => { AddProds(productName,productCount); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+        </RadzenStack>);
+    }
+}
+
+@code{
+    async Task PutProdPage()
+    {
+        string productName = "";
+        string productCount = "";
+        string id = "";
+        
+        var result = await DialogService.OpenAsync("Изменение продукта", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <RadzenTextBox @bind-Value="productName" Placeholder="Введите id" />
+            <RadzenTextBox @bind-Value="productName" Placeholder="Введите название продукта" />
+            <RadzenTextBox @bind-Value="productCount"Placeholder="Введите количество" />
+            <RadzenButton Text="Да" Click="@(() => { PutProds(id,productName,productCount); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+        </RadzenStack>);
+    }
+}
+
+
+
+
+
+@code{
+        async Task ShowInlineDialog()
+    {
+        var result = await DialogService.OpenAsync("Удаление продукта", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <p>Уверены, что хотите удалить данную строку?</p>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedProduct">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(Product.id)" Filterable="false" Title="Id"  Width="80px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Property="@nameof(Product.name)" Title="Name" Width="160px" />
+                            <RadzenDataGridColumn Property="@nameof(Product.count)" Title="Surname" Width="160px"/>
+                        </Columns>
+                     </RadzenDataGrid> 
+    using PracticeWeb.Service;
+                </RadzenStack>
+            </RadzenStack> 
+            <RadzenButton Text="Да" Click="@(() => { DeleteProd(SelectedProduct.FirstOrDefault().id); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+            <RadzenButton Text="Нет" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+        </RadzenStack>);
+    }
+}
 
 <PageTitle>User Page</PageTitle>
 
@@ -18,16 +83,16 @@
             <h1>Product Information</h1>
             <RadzenRow>
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 15px;">
-                    <RadzenButton Click=@(args => OnClick("Добавить продукт")) Icon="add_circle" ButtonStyle="ButtonStyle.Primary" />
-                    <RadzenButton Click=@(args => OnClick("Удалить продукт")) Text="Удалить" ButtonStyle="ButtonStyle.Primary" />
-                    <RadzenButton Click=@(args => OnClick("Изменить продукт")) Text="Изменить" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click= "AddProdPage" Icon="add_circle" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click = "ShowInlineDialog" Icon="delete" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click= "PutProdPage" Icon="Autorenew" ButtonStyle="ButtonStyle.Primary" />
                 </RadzenStack>
             </RadzenRow>
             <RadzenRow>
-                <RadzenDataGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@prods" @bind-Value="SelectedProduct">
+                <RadzenDataGrid ColumnWidth="200px" Colum AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@prods" @bind-Value="SelectedProduct">
                     <Columns>
-                        <RadzenDataGridColumn Property="@nameof(Product.id)" Filterable="false" Title="Id" Frozen="false" Width="80px" TextAlign="TextAlign.Center" />
-                        <RadzenDataGridColumn Property="@nameof(Product.name)" Title="name" Frozen="true" Width="160px" />
+                        <RadzenDataGridColumn Property="@nameof(Product.id)" Filterable="false"  Title="Id" Width="80px" TextAlign="TextAlign.Center" />
+                        <RadzenDataGridColumn Property="@nameof(Product.name)" Title="name" Width="160px" />
                         <RadzenDataGridColumn Property="@nameof(Product.count)" Title="count" Width="160px"/>
                     </Columns>
                 </RadzenDataGrid>
@@ -37,9 +102,9 @@
             <h1>Providers</h1>
             <RadzenRow>
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 15px;">
-                    <RadzenButton Click=@(args => OnClick("Добавить провайдера")) Text="Добавить" ButtonStyle="ButtonStyle.Primary" />
-                    <RadzenButton Click=@(args => OnClick("Удалить провайдера")) Text="Удалить" ButtonStyle="ButtonStyle.Primary" />
-                    <RadzenButton Click=@(args => OnClick("Изменить провайдера")) Text="Изменить" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click=@(args => OnClick("Добавить провайдера")) Icon="add_circle" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click=@(args => OnClick("Удалить провайдера")) Icon="delete" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Click=@(args => OnClick("Изменить провайдера")) Icon="Autorenew" ButtonStyle="ButtonStyle.Primary" />
                 </RadzenStack>
             </RadzenRow>
             <RadzenRow>
@@ -47,7 +112,7 @@
                     
                     <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedProduct?.FirstOrDefault()?.Provider">
                         <Columns>
-                            <RadzenDataGridColumn Property="@nameof(Provider.id)" Filterable="false" Title="id Provider" Frozen="true" Width="40px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Property="@nameof(Provider.id)" Filterable="false" Title="id Provider" Width="40px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn Property="@nameof(Provider.name)" Title="name" Width="100px" />
                         </Columns>
                     </RadzenDataGrid>
@@ -78,6 +143,16 @@
     }
    private void OnClick(string text)
     {
-        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Button Clicked", Detail = text });
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Нажата кнопка", Detail = text });
     }
+    private async Task DeleteProd(int id){
+        await DelProd.DeleteProdList(id);
+    }
+    private async Task AddProds(string name, string count){
+        await AddProd.AddProductList(name, Convert.ToInt32(count));
+    }
+    private async Task PutProds(string id,string name, string count){
+        await PutProd.PutProdList(name, Convert.ToInt32(id), Convert.ToInt32(count));
+    }
+
 }

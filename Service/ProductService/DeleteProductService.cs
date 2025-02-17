@@ -23,7 +23,7 @@ namespace PracticeWeb.Service.ProductService
         partial void OnDeleteProductList(HttpRequestMessage request);
         partial void OnDeleteProductListResponse(HttpResponseMessage response);
 
-        public async Task<IEnumerable<Product>> DeleteRankList(string id)
+        public async Task<IEnumerable<Product>> DeleteProdList(int id)
         {
             var uri = new Uri(httpClient.BaseAddress, $"deleteProducts");
 

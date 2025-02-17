@@ -15,8 +15,17 @@ builder.Services.AddScoped<ThemeService>();
 
 builder.Services.AddHttpClient("PracticeWeb", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
+
+builder.Services.AddHttpClient("addProducts", client => client.BaseAddress = new Uri("http://localhost:5084/"));
+builder.Services.AddScoped<AddProductService>();
+builder.Services.AddHttpClient("setProducts", client => client.BaseAddress = new Uri("http://localhost:5084/"));
+builder.Services.AddScoped<PutProductService>();
 builder.Services.AddHttpClient("getProducts", client => client.BaseAddress = new Uri("http://localhost:5084/"));
 builder.Services.AddScoped<GetProductService>();
+builder.Services.AddHttpClient("deleteProducts", client => client.BaseAddress = new Uri("http://localhost:5084/"));
+builder.Services.AddScoped<DeleteProductService>();
+
+
 
 
 builder.Services.AddHttpClient("searchProv", client => client.BaseAddress = new Uri("http://localhost:5084/"));
