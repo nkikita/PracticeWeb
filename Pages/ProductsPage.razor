@@ -14,69 +14,15 @@
 @inject GetProvToIDService GetProv
 
 
+@using Microsoft.JSInterop
+@using System.Text.Json
 
-@code{
-    async Task AddProdPage()
-    {
-        string productName = "";
-        string productCount = "";
-        var result = await DialogService.OpenAsync("Добавление продукта", ds =>
-        @<RadzenStack Gap="1.5rem">
-            <RadzenTextBox @bind-Value="productName" Placeholder="Введите название продукта" />
-            <RadzenTextBox @bind-Value="productCount"Placeholder="Введите количество" />
-            <RadzenButton Text="Да" Click="@(() => { AddProds(productName,productCount); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
-        </RadzenStack>);
-    }
-}
-
-@code{
-    async Task PutProdPage()
-    {
-        string productName = "";
-        string productCount = "";
-        string id = "";
-        
-        var result = await DialogService.OpenAsync("Изменение продукта", ds =>
-        @<RadzenStack Gap="1.5rem">
-            <RadzenTextBox @bind-Value="productName" Placeholder="Введите id" />
-            <RadzenTextBox @bind-Value="productName" Placeholder="Введите название продукта" />
-            <RadzenTextBox @bind-Value="productCount"Placeholder="Введите количество" />
-            <RadzenButton Text="Да" Click="@(() => { PutProds(id,productName,productCount); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
-        </RadzenStack>);
-    }
-}
-
-
-
-
-
-@code{
-        async Task ShowInlineDialog()
-    {
-        var result = await DialogService.OpenAsync("Удаление продукта", ds =>
-        @<RadzenStack Gap="1.5rem">
-            <p>Уверены, что хотите удалить данную строку?</p>
-            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
-                <RadzenStack Orientation="Orientation.Horizontal">
-                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedProduct">
-                        <Columns>
-                            <RadzenDataGridColumn Property="@nameof(Product.id)" Filterable="false" Title="Id"  Width="80px" TextAlign="TextAlign.Center" />
-                            <RadzenDataGridColumn Property="@nameof(Product.name)" Title="Name" Width="160px" />
-                            <RadzenDataGridColumn Property="@nameof(Product.count)" Title="Surname" Width="160px"/>
-                        </Columns>
-                     </RadzenDataGrid> 
-    using PracticeWeb.Service;
-                </RadzenStack>
-            </RadzenStack> 
-            <RadzenButton Text="Да" Click="@(() => { DeleteProd(SelectedProduct.FirstOrDefault().id); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
-            <RadzenButton Text="Нет" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
-        </RadzenStack>);
-    }
-}
+@inject DialogService DialogService
+@inject IJSRuntime JSRuntime
 
 <PageTitle>User Page</PageTitle>
 
-        
+
  <RadzenRow Gap="1rem">
         <RadzenColumn Size="12" SizeMD="6">
 
@@ -89,7 +35,7 @@
                 </RadzenStack>
             </RadzenRow>
             <RadzenRow>
-                <RadzenDataGrid ColumnWidth="200px" Colum AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@prods" @bind-Value="SelectedProduct">
+                <RadzenDataGrid ColumnWidth="200px" Colum AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@prods" @bind-Value="SelectedProduct" style="z-index: 0;">
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(Product.id)" Filterable="false"  Title="Id" Width="80px" TextAlign="TextAlign.Center" />
                         <RadzenDataGridColumn Property="@nameof(Product.name)" Title="name" Width="160px" />
@@ -110,7 +56,7 @@
             <RadzenRow>
                 <RadzenStack Gap="1rem">
                     
-                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedProduct?.FirstOrDefault()?.Provider">
+                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedProduct?.FirstOrDefault()?.Provider" style="z-index: 0;">
                         <Columns>
                             <RadzenDataGridColumn Property="@nameof(Provider.id)" Filterable="false" Title="id Provider" Width="40px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn Property="@nameof(Provider.name)" Title="name" Width="100px" />
@@ -120,11 +66,58 @@
             </RadzenRow>
         </RadzenColumn>
     </RadzenRow>
+
+
 @code{
     IList<Product>? SelectedProduct { get; set; }
     IList<Product>? products = new List<Product>{}; 
 
-
+    //для диалогового окна
+    async Task AddProdPage()
+    {
+        string productName = "";
+        string productCount = "";
+        var result = await DialogService.OpenAsync("Добавление продукта", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <RadzenTextBox @bind-Value="productName" Placeholder="Введите название продукта" />
+            <RadzenTextBox @bind-Value="productCount"Placeholder="Введите количество" />
+            <RadzenButton Text="Да" Click="@(() => { AddProds(productName,productCount); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+        </RadzenStack>);
+    }
+    async Task PutProdPage()
+    {
+        string productName = "";
+        string productCount = "";
+        string id = "";
+        
+        var result = await DialogService.OpenAsync("Изменение продукта", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <RadzenTextBox @bind-Value="productName" Placeholder="Введите id" />
+            <RadzenTextBox @bind-Value="productName" Placeholder="Введите название продукта" />
+            <RadzenTextBox @bind-Value="productCount"Placeholder="Введите количество" />
+            <RadzenButton Text="Да" Click="@(() => { PutProds(id,productName,productCount); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+        </RadzenStack>);
+    }
+    async Task ShowInlineDialog()
+    {
+        var result = await DialogService.OpenAsync("Удаление продукта", ds =>
+        @<RadzenStack Gap="1.5rem">
+            <p>Уверены, что хотите удалить данную строку?</p>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedProduct">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(Product.id)" Filterable="false" Title="Id"  Width="80px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Property="@nameof(Product.name)" Title="Name" Width="160px" />
+                            <RadzenDataGridColumn Property="@nameof(Product.count)" Title="Surname" Width="160px"/>
+                        </Columns>
+                     </RadzenDataGrid> 
+                </RadzenStack>
+            </RadzenStack> 
+            <RadzenButton Text="Да" Click="@(() => { DeleteProd(SelectedProduct.FirstOrDefault().id); ds.Close(true); })" ButtonStyle="ButtonStyle.Success"/>
+            <RadzenButton Text="Нет" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+        </RadzenStack>);
+    }
     protected IEnumerable<Product>? prods;
     protected IEnumerable<Provider>? providers;
     protected override async Task OnInitializedAsync()
@@ -154,5 +147,4 @@
     private async Task PutProds(string id,string name, string count){
         await PutProd.PutProdList(name, Convert.ToInt32(id), Convert.ToInt32(count));
     }
-
 }

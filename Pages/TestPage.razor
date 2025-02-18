@@ -1,0 +1,52 @@
+@page "/TestPage";
+@using PracticeWeb.Models;
+@using PracticeWeb.Service.ProductService;
+@using PracticeWeb.Service.ProviderService;
+@layout PracticeWeb.Layout.EmptyLayout;
+
+<PageTitle>User Page</PageTitle>
+
+        
+ <RadzenRow Gap="1rem">
+        <RadzenColumn Size="12" SizeMD="6">
+
+            <h1>Product Information</h1>
+            <RadzenRow>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 15px;">
+                    <RadzenButton   Icon="add_circle" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton  Icon="delete" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton  Icon="Autorenew" ButtonStyle="ButtonStyle.Primary" />
+                </RadzenStack>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenDataGrid ColumnWidth="200px" Colum AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" Data="@prods" @bind-Value="SelectedProduct">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(Product.id)" Filterable="false"  Title="Id" Width="80px" TextAlign="TextAlign.Center" />
+                        <RadzenDataGridColumn Property="@nameof(Product.name)" Title="name" Width="160px" />
+                        <RadzenDataGridColumn Property="@nameof(Product.count)" Title="count" Width="160px"/>
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenRow>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6">
+            <h1>Providers</h1>
+            <RadzenRow>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top: 10px; margin-bottom: 15px;">
+                    <RadzenButton  Icon="add_circle" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Primary" />
+                    <RadzenButton  Icon="Autorenew" ButtonStyle="ButtonStyle.Primary" />
+                </RadzenStack>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenStack Gap="1rem">
+                    
+                    <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="SelectedProduct?.FirstOrDefault()?.Provider">
+                        <Columns>
+                            <RadzenDataGridColumn Property="@nameof(Provider.id)" Filterable="false" Title="id Provider" Width="40px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Property="@nameof(Provider.name)" Title="name" Width="100px" />
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenStack>
+            </RadzenRow>
+        </RadzenColumn>
+    </RadzenRow>

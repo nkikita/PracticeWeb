@@ -1,0 +1,7 @@
+@page  "/DialogWnd/{OrderID}";
+<RadzenStack Gap="1rem" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+     <RadzenText TextStyle="TextStyle.Overline" class="rz-mt-2 rz-my-0" Style="color: var(--rz-text-tertiary-color);">OrderID</RadzenText>
+</RadzenStack>
+@code {
+    [Parameter] public int OrderID { get; set; }
+    }
