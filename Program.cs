@@ -27,6 +27,10 @@ builder.Services.AddScoped<DeleteProductService>();
 
 
 
+builder.Services.AddHttpClient("getXMLToId", client => client.BaseAddress = new Uri("http://localhost:5084/"));
+builder.Services.AddScoped<GetXMLToIdService>();
+
+
 
 builder.Services.AddHttpClient("searchProv", client => client.BaseAddress = new Uri("http://localhost:5084/"));
 builder.Services.AddScoped<GetProvToIDService>();
